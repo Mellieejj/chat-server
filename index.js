@@ -17,7 +17,7 @@ app.use(parser);
 const stream = new Sse();
 
 app.get("/stream", (request, response) => {
-  stream.updateInit(db.message); //new user get the history, every user gets it again
+  stream.updateInit(db.messages); //new user get the history, every user gets it again
   stream.init(request, response);
 });
 
