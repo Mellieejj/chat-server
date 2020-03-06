@@ -17,7 +17,12 @@ app.use(parser);
 const stream = new Sse();
 
 app.get("/stream", (request, response) => {
-  stream.updateInit(db.messages); //new user get the history, every user gets it again
+  const action = {
+    type: "ALL_MESSAGES",
+    payload: db.messages
+  };
+
+  stream.updateInit(action); //new user get the history, every user gets it again
   stream.init(request, response);
 });
 
@@ -27,7 +32,13 @@ app.post("/message", (request, response) => {
   db.messages.push(text);
 
   response.send(text);
-  stream.send(text);
+
+  const action = {
+    type: "NEW_MESSAGE",
+    payload: text
+  };
+
+  stream.send(action);
 
   console.log("db test:", db);
 });
