@@ -1,5 +1,6 @@
 const express = require("express");
 const Sse = require("json-sse"); //stream maker
+const cors = require("cors");
 
 const app = express();
 const port = 4000;
@@ -8,13 +9,15 @@ const db = {};
 
 db.messages = [];
 
+app.use(cors());
+
 const parser = express.json();
 app.use(parser);
 
 const stream = new Sse();
 
 app.get("/stream", (request, response) => {
-  stream.updateInit(db.message); //new user get the history
+  stream.updateInit(db.message); //new user get the history, every user gets it again
   stream.init(request, response);
 });
 
