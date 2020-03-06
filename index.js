@@ -14,6 +14,7 @@ app.use(parser);
 const stream = new Sse();
 
 app.get("/stream", (request, response) => {
+  stream.updateInit(db.message); //new user get the history
   stream.init(request, response);
 });
 
