@@ -2,6 +2,6 @@ const db = {};
 
 db.messages = [];
 
-db.channels = [];
+db.channels = ["Students", "Teachers", "pets"];
 
 module.exports = db;

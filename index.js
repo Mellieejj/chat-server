@@ -22,6 +22,13 @@ app.get("/stream", (request, response) => {
 
   stream.updateInit(action); //new user get the history, every user gets it again
   stream.init(request, response);
+
+  const channelAction = {
+    type: "ALL_CHANNELS",
+    payload: db.channels
+  };
+
+  stream.send(channelAction);
 });
 
 app.use(messageRouter);
