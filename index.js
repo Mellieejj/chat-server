@@ -1,4 +1,5 @@
 const express = require("express");
+const Sse = require("json-sse"); //stream maker
 
 const app = express();
 const port = 4000;
@@ -6,9 +7,15 @@ const port = 4000;
 const db = {};
 
 db.messages = [];
-const parser = express.json();
 
+const parser = express.json();
 app.use(parser);
+
+const stream = new Sse();
+
+app.get("/stream", (request, response) => {
+  stream.init(request, response);
+});
 
 app.post("/message", (request, response) => {
   const { text } = request.body;
@@ -16,6 +23,8 @@ app.post("/message", (request, response) => {
   db.messages.push(text);
 
   response.send(text);
+  stream.send(text);
+
   console.log("db test:", db);
 });
 
