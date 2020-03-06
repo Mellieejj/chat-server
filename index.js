@@ -1,20 +1,18 @@
 const express = require("express");
-const Sse = require("json-sse"); //stream maker
+// const Sse = require("json-sse"); //stream maker
 const cors = require("cors");
+const db = require("./db");
+const messageRouter = require("./message/router");
+const channelRouter = require("./channel/router");
+const stream = require("./stream");
 
 const app = express();
 const port = process.env.PORT || 4000;
-
-const db = {};
-
-db.messages = [];
 
 app.use(cors());
 
 const parser = express.json();
 app.use(parser);
-
-const stream = new Sse();
 
 app.get("/stream", (request, response) => {
   const action = {
@@ -26,21 +24,7 @@ app.get("/stream", (request, response) => {
   stream.init(request, response);
 });
 
-app.post("/message", (request, response) => {
-  const { text } = request.body;
-
-  db.messages.push(text);
-
-  response.send(text);
-
-  const action = {
-    type: "NEW_MESSAGE",
-    payload: text
-  };
-
-  stream.send(action);
-
-  console.log("db test:", db);
-});
+app.use(messageRouter);
+app.use(channelRouter);
 
 app.listen(port, () => console.log("listening on ", port));
